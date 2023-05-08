@@ -1,11 +1,13 @@
+
 import React from 'react'
+import Builder from './pages/Builder';
 
 const App = () => {
   return (
-    <div>
-      App
-    </div>
-  )
+    <>
+      <Builder/>
+    </>
+  );
 }
 
 export default App
