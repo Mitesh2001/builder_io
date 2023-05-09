@@ -11,56 +11,35 @@ builder.init('c5b58dfc09004185a22af782820d969c');
 export default function CatchAllRoute() {
   const isPreviewingInBuilder = useIsPreviewing();
   const [notFound, setNotFound] = useState(false);
-  const [content, setContent] = useState(null);
-  const [announcement, setAnnouncement] = useState(null);
 
-  // get the page content from Builder
-   useEffect(() => {
-    async function fetchContent() {
-      const content = await builder
-        .get("page", {
-          url: window.location.pathname
-        })
-        .promise();
-
-      setContent(content);
-      setNotFound(!content);
-
-      // if the page title is found, 
-      // set the document title
-      if (content?.data.title) {
-       document.title = content.data.title
-      }
-    }
-    fetchContent();
-  }, [window.location.pathname]);
-
-  useEffect(() => {
-    builder
-      .get("announcement-bar", {
-        userAttributes: {
-          // To allow targeting different announcements at different pages (URLs)
-          urlPath: window.location.pathname,
-        },
-      })
-      .toPromise()
-      .then((announcementBar) => setAnnouncement(announcementBar));
-  }, []);
-
-  
-  // If no page is found, return 
-  // a 404 page from your code.
-  // The following hypothetical 
-  // <FourOhFour> is placeholder.
   if (notFound && !isPreviewingInBuilder) {
     return "404 Error !"
   }
 
+  const dynamicData = {
+    shopButtonTitle: 'Get Your Products !',
+    saleNameTitle: 'Deal Of The Century coming soon... ',
+    quote : '"Changed Alibaba was created when Jack Ma was rejected !"',
+    image: {
+      src: 'https://example.com/image.jpg',
+      alt: 'Dynamic Image',
+    },
+  };
+
   // return the page when found
+
+  const builderComponents = [
+    <BuilderComponent model="page" data={dynamicData} />,
+    <BuilderComponent model="model-2" />
+  ];
+
   return (
     <>
-      <BuilderComponent model="announcement-bar" content={announcement} />
-      <BuilderComponent model="page" content={content} />
+      {builderComponents.map((component, index) => (
+        <div key={index}>
+          {component}
+        </div>
+      ))}
     </>
   );
 }
